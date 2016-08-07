@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "dojo": "registry:dt/dojo#1.9.0+20160725132013",
+    "dojo/dijit": "registry:dt/dojo/dijit#1.9.0+20160724063110"
+  }
+}

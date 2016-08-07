@@ -1,5 +1,6 @@
-define(['dojo/_base/declare', 'dijit/Dialog', "dijit/layout/BorderContainer", "dijit/layout/ContentPane"
-], function (declare, Dialog, BorderContainer, ContentPane) {
+define(["./centerLayout", 'dojo/_base/declare', 'dijit/Dialog', "dijit/layout/BorderContainer",
+    "dijit/layout/ContentPane",
+], function (CenterLayout, declare, Dialog, BorderContainer, ContentPane) {
     return declare(BorderContainer, {
         constructor: function (args) {
             console.info(args);
@@ -25,10 +26,14 @@ define(['dojo/_base/declare', 'dijit/Dialog', "dijit/layout/BorderContainer", "d
                 content: "how are you?"
             });
             this.addChild(cp2);
+            var centerLayout = new CenterLayout();
+            cp2.addChild(centerLayout);
+            centerLayout.render();
             var cp3 = new ContentPane({
                 region: "right",
                 content: "how are you?"
             });
+
             this.addChild(cp3);
             var cp4 = new ContentPane({
                 style: 'height:50px',
