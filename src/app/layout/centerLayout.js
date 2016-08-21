@@ -1,8 +1,8 @@
 define([
     'require', 'dojo/_base/declare', "dijit/layout/ContentPane",
     "dojo/on", "dojo/topic", "dojo/dom-construct", "dojo/dom", "dijit/form/Button",
-    "dijit/registry"
-], function (require, declare, ContentPane, on, topic, domConstruct, dom, Button, Register) {
+    "dijit/registry", "dojo/Deferred"
+], function (require, declare, ContentPane, on, topic, domConstruct, dom, Button, Register, Deferred) {
     return declare(ContentPane, {
         btnPane: null,
         btnCount: 0,
@@ -11,6 +11,7 @@ define([
         },
         render: function () {
             this.addChild(this.createButtonPane());
+            this.addChild(this.createDefrredPane());
             this.addEventHandler();
         },
         createButtonPane: function () {
@@ -29,6 +30,23 @@ define([
             this.btnPane.addChild(createAlertBtn);
             return this.btnPane;
         },
+
+        createDefrredPane: function () {
+            var deferredPane = new ContentPane();
+            var h1 = domConstruct.create("h1", { innerHTML: "Output:" });
+            var div = domConstruct.create("div", { id: "output", innerHTML: "Not yet started." });
+            var button = new Button({
+                type: "button",
+                id: "startButton",
+                label: "start"
+            });
+            deferredPane.domNode.appendChild(h1);
+            deferredPane.domNode.appendChild(div);
+            deferredPane.addChild(button);
+
+            return deferredPane;
+        },
+
         addEventHandler: function () {
             var alertButton = Register.byId("alertButton");
             var createAlert = Register.byId("createAlert");
@@ -61,7 +79,25 @@ define([
             topic.subscribe("alertUser", function (text) {
                 alert(text);
             });
-        }
 
+            var startButton = Register.byId("startButton");
+            var that = this;
+            startButton.on("click", function (e) {
+                var process = that.asyncProcess();
+                process.then(function (results) {
+                    dom.byId("output").innerHTML = "I'm finished, and the result was: " + results;
+                });
+            });
+        },
+
+        asyncProcess: function () {
+            var deferred = new Deferred();
+            dom.byId("output").innerHTML = "I'm running...";
+
+            setTimeout(function () {
+                deferred.resolve("success");
+            }, 1000);
+            return deferred.promise;
+        }
     });
 });
